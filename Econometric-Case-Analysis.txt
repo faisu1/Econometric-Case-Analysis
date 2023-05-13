@@ -1,0 +1,130 @@
+---------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  H:\# Stata\Econometric-Case-Analysis\faisu1.log
+  log type:  text
+ opened on:   23 april 2023, 20:21:29
+
+
+. bcuse meap01, clear
+
+Contains data from http://fmwww.bc.edu/ec-p/data/wooldridge/meap01.dta
+ Observations:         1,823                  
+    Variables:            11                  22 Dec 2005 10:35
+---------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+---------------------------------------------------------------------------------
+dcode           float   %9.0g                 district code
+bcode           int     %9.0g                 building code
+math4           float   %9.0g                 % students satisfactory, 4th grade
+                                                math
+read4           float   %9.0g                 % students satisfactory, 4th grade
+                                                reading
+lunch           float   %9.0g                 % students eligible for free or
+                                                reduced lunch
+enroll          int     %9.0g                 school enrollment
+expend          float   %9.0g                 total spending, $
+exppp           float   %9.0g                 expenditures per pupil:
+                                                expend/enroll
+lenroll         float   %9.0g                 log(enroll)
+lexpend         float   %9.0g                 log(expend)
+lexppp          float   %9.0g                 log(exppp)
+---------------------------------------------------------------------------------
+Sorted by: dcode  bcode
+
+. *(i)*
+
+. sum math4
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+       math4 |      1,823      71.909    19.95409          0        100
+
+. **Yes, the range makes sense. Because, it provides maximum score (100) and mini
+> mum score (0).**
+
+. *(ii)*
+
+. sum math4 if math4==100
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+       math4 |         38         100           0        100        100
+
+. mata
+------------------------------------------------- mata (type end to exit) -------
+: (38*100)/1823
+  2.084476138
+
+: end
+---------------------------------------------------------------------------------
+
+. ** So, 38 schools have a perfect pass rate on the math test. And, that is 2% of
+>  the total sample**
+
+. *(iii)*
+
+. sum math4 if math4==50
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+       math4 |         17          50           0         50         50
+
+. ** So, 17 schools have math pass rates of exactly 50% **
+
+. *(iv)*
+
+. sum math4 read4
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+       math4 |      1,823      71.909    19.95409          0        100
+       read4 |      1,823    60.06188    19.14729          0        100
+
+. ** Average pass rate for the math is 71.9 whereas reading is 60.1. So, reading 
+> is harder to pass.**
+
+. *(v)*
+
+. correlate math4 read4
+(obs=1,823)
+
+             |    math4    read4
+-------------+------------------
+       math4 |   1.0000
+       read4 |   0.8427   1.0000
+
+
+. ** There is strong correlation between math4 and read4.**
+
+. *(vi)*
+
+. sum exppp
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+       exppp |      1,823    5194.865     1091.89   1206.882   11957.64
+
+. ** Here, the average of exppp is $5194.87 and standard deviation is $1091.89. S
+> o, I would say that there is not much variation in per pupil spending.**
+
+. *(vii)*
+
+. mata
+------------------------------------------------- mata (type end to exit) -------
+: (6000-5500)/5500
+  .0909090909
+
+: .0909090909*100
+  9.09090909
+
+: 100*[log(6000)-log(5500)]
+nothing found where subexp expected
+r(3000);
+
+: end
+---------------------------------------------------------------------------------
+
+. ** By (6000-5500)/5500= 0.0909 or 9.1 percentage School A's spending exceed Sch
+> ool B's. For natual log, School A's spending exceed School B's by  100*{log(600
+> 0)-l0g(5500)}= 3.78%, which is 5.32% diffrent from the actual one.**
